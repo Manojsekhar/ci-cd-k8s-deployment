@@ -1,0 +1,34 @@
+
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh 'docker build -t devops-demo-app ../docker/'
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f ../k8s/deployment.yaml'
+                sh 'kubectl apply -f ../k8s/service.yaml'
+            }
+        }
+        stage('Monitoring') {
+            steps {
+                echo 'Verify Prometheus & Grafana dashboards'
+            }
+        }
+    }
+}
